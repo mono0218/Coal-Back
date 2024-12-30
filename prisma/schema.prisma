@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String         @id
+  username      String
+  icon_url      String
+  status        String
+  joining_rooms RoomsOnUsers[]
+  from_users    Friends[]      @relation("from_users")
+  to_users      Friends[]      @relation("to_users")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Friends {
+  id        String @id @default(uuid())
+  from_id   String
+  to_id     String
+  status    String
+  from_user User   @relation("from_users", fields: [from_id], references: [id])
+  to_user   User   @relation("to_users", fields: [to_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Rooms {
+  id            String         @id @default(uuid())
+  name          String
+  owner         String
+  password      String?
+  is_open       Boolean
+  joining_users RoomsOnUsers[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model RoomsOnUsers {
+  room_id String
+  user_id String
+  room    Rooms  @relation(fields: [room_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [id])
+
+  joined_at DateTime @default(now())
+
+  @@id([room_id, user_id])
+}
