@@ -10,7 +10,10 @@
     "@kinde/webhooks": "^1.0.0",
     "@prisma/client": "6.1.0",
     "hono": "^4.6.15",
-    "jwt-decode": "^4.0.0"
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.1.0",
+    "jwt-decode": "^4.0.0",
+    "livekit-server-sdk": "^2.9.4"
   },
   "devDependencies": {
     "@types/bun": "^1.1.14",

@@ -1,27 +1,36 @@
 import {Hono} from "hono";
-import {kindeRoute} from "./kinde";
-import {UserRoute} from "./users";
-import {RoomRoute} from "./rooms";
-import {FriendRoute} from "./friends";
+import {kindeRoute} from "./route/kinde";
+import {UserRoute} from "./route/users";
+import {RoomRoute} from "./route/rooms";
+import {FriendRoute} from "./route/friends";
 import {HTTPException} from "hono/http-exception";
+import {jwtAuth} from "./lib/auth";
+import {
+    PrismaClientInitializationError,
+    PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError,
+    PrismaClientValidationError
+} from "@prisma/client/runtime/library";
 
-const app = new Hono();
+const app = new Hono<{ Variables: {"user_id":string}}>();
 
-app.use((c,next) => {
+app.use(async (c, next) => {
     try{
-        let token = c.req.header("Authorization")
+        if (c.req.path.includes("/webhook")) return await next();
 
+        let token = c.req.header("Authorization")
         if (!token) throw new HTTPException(401,{message:"Unauthorized"});
 
         token = token.split(" ")[1];
+        let user_id = await jwtAuth(token);
 
-
+        c.set("user_id",user_id);
+        await next();
     }catch (e) {
-        console.log(e);
+        if (e instanceof HTTPException) return e;
     }
 })
 
-app.get("/", (c,next) => {
+app.get("/", (c) => {
     return c.json({status: "Success"});
 });
 
@@ -29,5 +38,16 @@ app.route("/webhook",kindeRoute);
 app.route("/users",UserRoute);
 app.route("/rooms",RoomRoute);
 app.route("/friends",FriendRoute);
+
+app.onError((e,c) => {
+    if (e instanceof HTTPException) return c.json({message: e.message},e.status);
+    if (e instanceof PrismaClientValidationError) return c.json({message: e.message},400);
+    if (e instanceof PrismaClientInitializationError) return c.json({message: e.message},500);
+    if (e instanceof PrismaClientKnownRequestError) return c.json({message: e.message},500);
+    if (e instanceof PrismaClientRustPanicError) return c.json({message: e.message},500);
+    if (e instanceof PrismaClientUnknownRequestError) return c.json({message: e.message},500);
+
+    return c.json({message: "Internal Server Error"}, 500);
+})
 
 export default app;
