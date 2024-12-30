@@ -2,18 +2,18 @@ import { Hono } from "hono";
 
 export const FriendRoute = new Hono()
 
-FriendRoute.get("/friends", (c) => {
+FriendRoute.get("/", (c) => {
     return c.json({message: "Hello World"})
 })
 
-FriendRoute.post("/friends", (c) => {
+FriendRoute.post("/", (c) => {
     return c.json({message: "Hello World"})
 })
 
-FriendRoute.put("/friends", (c) => {
+FriendRoute.put("/", (c) => {
     return c.json({message: "Hello World"})
 })
 
-FriendRoute.delete("/friends", (c) => {
+FriendRoute.delete("/", (c) => {
     return c.json({message: "Hello World"})
 })
