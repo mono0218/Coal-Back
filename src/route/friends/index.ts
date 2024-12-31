@@ -4,6 +4,7 @@ import {HTTPException} from "hono/http-exception";
 
 export const FriendRoute =  new Hono<{ Variables: {"user_id":string}}>();
 const prisma = new PrismaClient();
+
 FriendRoute.get("/", async (c) => {
     const user_id = c.get("user_id")
     const result = await prisma.friends.findMany({

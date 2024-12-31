@@ -11,6 +11,7 @@ import {
     PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError,
     PrismaClientValidationError
 } from "@prisma/client/runtime/library";
+import {ZodError} from "zod";
 
 const app = new Hono<{ Variables: {"user_id":string}}>();
 app.use("*",async (c, next) => {
@@ -52,6 +53,7 @@ app.onError((e,c) => {
     if (e instanceof PrismaClientKnownRequestError) return c.json({message: e.message},500);
     if (e instanceof PrismaClientRustPanicError) return c.json({message: e.message},500);
     if (e instanceof PrismaClientUnknownRequestError) return c.json({message: e.message},500);
+    if (e instanceof ZodError) return c.json({message: e.message},400);
 
     return c.json({message: "Internal Server Error"}, 500);
 })
