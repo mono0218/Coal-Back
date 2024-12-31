@@ -1,6 +1,27 @@
 import {z} from "@hono/zod-openapi";
 
-export const GetUserByIdResponseScheme = z.object({
+export const friendScheme = z.object({
+    id: z.string().openapi({
+        example: "1234567890"
+    }),
+    from_id: z.string().openapi({
+        example: "1234567890"
+    }),
+    to_id: z.string().openapi({
+        example: "1234567890"
+    }),
+    status: z.string().openapi({
+        example: "friend"
+    }),
+    created_at: z.string().openapi({
+        example: "2021-09-01T00:00:00Z"
+    }),
+    updated_at: z.string().openapi({
+        example: "2021-09-01T00:00:00Z"
+    })
+})
+
+export const getUserByIdResponseScheme = z.object({
     id: z.string().openapi({
         example: "1234567890"
     }),
@@ -13,11 +34,25 @@ export const GetUserByIdResponseScheme = z.object({
     status: z.string().openapi({
         example: "Free"
     }),
-    from_users: z.array(z.string()).openapi({
-        example: ["1234567890"]
+    from_users: z.array(friendScheme).openapi({
+        example: [{
+            id: "1234567890",
+            from_id: "1234567890",
+            to_id: "1234567890",
+            status: "friend",
+            created_at: "2021-09-01T00:00:00Z",
+            updated_at: "2021-09-01T00:00:00Z"
+        }]
     }),
-    to_users: z.array(z.string()).openapi({
-        example: ["1234567890"]
+    to_users: z.array(friendScheme).openapi({
+        example: [{
+            id: "1234567890",
+            from_id: "1234567890",
+            to_id: "1234567890",
+            status: "friend",
+            created_at: "2021-09-01T00:00:00Z",
+            updated_at: "2021-09-01T00:00:00Z"
+        }]
     }),
     created_at: z.string().openapi({
         example: "2021-09-01T00:00:00Z"
@@ -51,5 +86,11 @@ export const updateUserResponseScheme = z.object({
     }),
     created_at: z.string().openapi({
         example: "2021-09-01T00:00:00Z"
+    })
+})
+
+export const deleteUserResponseScheme = z.object({
+    message: z.string().openapi({
+        example: "User deleted"
     })
 })

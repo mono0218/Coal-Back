@@ -1,9 +1,11 @@
 import { createRoute } from "@hono/zod-openapi";
 import {
-    GetUserByIdResponseScheme,
+    deleteUserResponseScheme,
+    getUserByIdResponseScheme,
     updateUserRequestScheme,
     updateUserResponseScheme
 } from "../../lib/scheme/user.scheme";
+import {ErrorResponse} from "../../lib/scheme/error.scheme";
 
 export const getUserById = createRoute({
     method: "get",
@@ -12,7 +14,7 @@ export const getUserById = createRoute({
         200:{
             content:{
                 "application/json":{
-                    schema:GetUserByIdResponseScheme
+                    schema:getUserByIdResponseScheme
                 }
             },
             description:"Success"
@@ -54,7 +56,7 @@ export const getUser = createRoute({
         200:{
             content:{
                 "application/json":{
-                    schema:GetUserByIdResponseScheme
+                    schema:getUserByIdResponseScheme
                 }
             },
             description:"Success"
@@ -139,12 +141,7 @@ export const deleteUser = createRoute({
         200:{
             content:{
                 "application/json":{
-                    schema:{
-                        type:"object",
-                        properties:{
-                            message:{type:"string"}
-                        }
-                    }
+                    schema:deleteUserResponseScheme
                 }
             },
             description:"Success"
@@ -152,12 +149,7 @@ export const deleteUser = createRoute({
         500:{
             content:{
                 "application/json":{
-                    schema:{
-                        type:"object",
-                        properties:{
-                            message:{type:"string"}
-                        }
-                    }
+                    schema:ErrorResponse
                 }
             },
             description:"Internal Server Error"
