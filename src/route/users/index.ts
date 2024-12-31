@@ -1,17 +1,61 @@
 import { PrismaClient } from "@prisma/client";
-import {Hono} from "hono";
 import {HTTPException} from "hono/http-exception";
-import {zValidator} from "@hono/zod-validator";
-import {PutUserScheme} from "../../lib/scheme/user.scheme";
+import {OpenAPIHono} from "@hono/zod-openapi";
+import {deleteUser, getUser, getUserById, updateUser} from "./route";
 
-export const UserRoute =  new Hono<{ Variables: {"user_id":string}}>();
+export const UserRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>()
+
 const prisma = new PrismaClient();
 
-UserRoute.get("/:id",
+UserRoute.openapi(getUserById,
     async (c) => {
+        const { id } = c.req.valid('param')
+        const user = await prisma.user.findUnique({
+            where: {
+                id: id
+            },
+            select:{
+                id:true,
+                username:true,
+                icon_url:true,
+                status:true,
+                from_users:true,
+                to_users:true,
+                created_at:true,
+            }
+        })
+
+        if (!user) {
+            throw new HTTPException(404, {message: "User not found"})
+        }
+
+        return c.json({
+            id: user.id,
+            username: user.username,
+            icon_url: user.icon_url,
+            status: user.status,
+            from_users: user.from_users,
+            to_users: user.to_users,
+            created_at: user.created_at
+        },200)
+    }
+)
+
+UserRoute.openapi(getUser,
+    async (c) => {
+
         const user = await prisma.user.findUnique({
             where: {
                 id: c.req.param("id")
+            },
+            select:{
+                id:true,
+                username:true,
+                icon_url:true,
+                status:true,
+                from_users:true,
+                to_users:true,
+                created_at:true,
             }
         })
 
@@ -23,41 +67,18 @@ UserRoute.get("/:id",
             id: user.id,
             username: user.username,
             icon_url: user.icon_url,
-            status: user.status
+            status: user.status,
+            from_users: user.from_users,
+            to_users: user.to_users,
+            created_at: user.created_at
         },200)
     }
 )
 
-UserRoute.get("/",
+UserRoute.openapi(updateUser,
     async (c) => {
         const user_id = c.get("user_id")
-
-        const user = await prisma.user.findUnique({
-            where: {
-                id: user_id
-            }
-        })
-
-        if (!user) {
-            throw new HTTPException(404, {message: "User not found"})
-        }
-
-        return c.json({
-            id: user.id,
-            username: user.username,
-            icon_url: user.icon_url,
-            status: user.status
-        },200)
-    }
-)
-
-UserRoute.put("/",
-    zValidator("json", PutUserScheme, (result) => {
-        if (!result.success) throw new HTTPException(400, {message: result.error.message})
-    }),
-    async (c) => {
-        const user_id = c.get("user_id")
-        const req = c.req.valid("json")
+        const req = c.req.valid("param")
         const user = await prisma.user.update({
             where: {
                 id: user_id
@@ -78,13 +99,15 @@ UserRoute.put("/",
     }
 )
 
-UserRoute.delete("/", async (c) => {
-    const user_id = c.get("user_id")
-    await prisma.user.delete({
-        where: {
-            id: user_id
-        }
-    })
+UserRoute.openapi(deleteUser,
+    async (c) => {
+        const user_id = c.get("user_id")
+        await prisma.user.delete({
+            where: {
+                id: user_id
+            }
+        })
 
-    return c.json({message: "User deleted"},200)
-})
+        return c.json({message: "User deleted"},200)
+    }
+)

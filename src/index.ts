@@ -1,4 +1,3 @@
-import {Hono} from "hono";
 import {kindeRoute} from "./route/kinde";
 import {UserRoute} from "./route/users";
 import {RoomRoute} from "./route/rooms";
@@ -12,11 +11,14 @@ import {
     PrismaClientValidationError
 } from "@prisma/client/runtime/library";
 import {ZodError} from "zod";
+import {OpenAPIHono} from "@hono/zod-openapi";
+import { swaggerUI } from '@hono/swagger-ui';
 
-const app = new Hono<{ Variables: {"user_id":string}}>();
+
+const app = new OpenAPIHono<{ Variables: {"user_id":string}}>();
 
 app.use("*",async (c, next) => {
-    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")) return await next();
+    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")) return await next();
 
     let token = c.req.header("Authorization")
     if (!token) throw new HTTPException(401,{message:"Unauthorized"});
@@ -37,6 +39,18 @@ app.get(
         },
     })
 );
+
+app.doc('/specification', {
+    openapi: '3.0.0',
+    info: {
+        version: '1.0.0',
+        title: 'My API',
+    },
+})
+
+app.get('/docs', swaggerUI({
+    url: '/specification',
+}));
 
 app.get("/", (c) => {
     return c.json({status: "Success"});
