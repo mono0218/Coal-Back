@@ -5,6 +5,7 @@ import {RoomRoute} from "./route/rooms";
 import {FriendRoute} from "./route/friends";
 import {HTTPException} from "hono/http-exception";
 import {jwtAuth} from "./lib/auth";
+import { openAPISpecs } from 'hono-openapi';
 import {
     PrismaClientInitializationError,
     PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError,
@@ -12,23 +13,28 @@ import {
 } from "@prisma/client/runtime/library";
 
 const app = new Hono<{ Variables: {"user_id":string}}>();
+app.use("*",async (c, next) => {
+    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")) return await next();
 
-app.use(async (c, next) => {
-    try{
-        if (c.req.path.includes("/webhook")) return await next();
+    let token = c.req.header("Authorization")
+    if (!token) throw new HTTPException(401,{message:"Unauthorized"});
 
-        let token = c.req.header("Authorization")
-        if (!token) throw new HTTPException(401,{message:"Unauthorized"});
+    token = token.split(" ")[1];
+    let user_id = await jwtAuth(token);
 
-        token = token.split(" ")[1];
-        let user_id = await jwtAuth(token);
-
-        c.set("user_id",user_id);
-        await next();
-    }catch (e) {
-        if (e instanceof HTTPException) return e;
-    }
+    c.set("user_id",user_id);
+    await next();
 })
+
+app.get(
+    '/openapi',
+    openAPISpecs(app, {
+        documentation: {
+            info: { title: 'Hono API', version: '1.0.0', description: 'Greeting API' },
+            servers: [{ url: 'http://localhost:3000', description: 'Local Server' }],
+        },
+    })
+);
 
 app.get("/", (c) => {
     return c.json({status: "Success"});

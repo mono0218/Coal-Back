@@ -5,45 +5,49 @@ import {HTTPException} from "hono/http-exception";
 export const UserRoute =  new Hono<{ Variables: {"user_id":string}}>();
 const prisma = new PrismaClient();
 
-UserRoute.get("/:id", async (c) => {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: c.req.param("id")
+UserRoute.get("/:id",
+    async (c) => {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: c.req.param("id")
+            }
+        })
+
+        if (!user) {
+            throw new HTTPException(404, {message: "User not found"})
         }
-    })
 
-    if (!user) {
-        throw new HTTPException(404, {message: "User not found"})
+        return c.json({
+            id: user.id,
+            username: user.username,
+            icon_url: user.icon_url,
+            status: user.status
+        },200)
     }
+)
 
-    return c.json({
-        id: user.id,
-        username: user.username,
-        icon_url: user.icon_url,
-        status: user.status
-    },200)
-})
+UserRoute.get("/",
+    async (c) => {
+        const user_id = c.get("user_id")
 
-UserRoute.get("/", async (c) => {
-    const user_id = c.get("user_id")
+        const user = await prisma.user.findUnique({
+            where: {
+                id: user_id
+            }
+        })
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id: user_id
+        if (!user) {
+            throw new HTTPException(404, {message: "User not found"})
         }
-    })
 
-    if (!user) {
-        throw new HTTPException(404, {message: "User not found"})
+        return c.json({
+            id: user.id,
+            username: user.username,
+            icon_url: user.icon_url,
+            status: user.status
+        },200)
     }
-
-    return c.json({
-        id: user.id,
-        username: user.username,
-        icon_url: user.icon_url,
-        status: user.status
-    },200)
-})
+)
 
 UserRoute.put("/", async (c) => {
     const user_id = c.get("user_id")
