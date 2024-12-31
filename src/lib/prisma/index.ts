@@ -5,12 +5,7 @@ export function getPrismaClient(){
     require('dotenv').config()
     return new PrismaClient(
         {
-            datasources: {
-                db: {
-                    url: process.env.DIRECT_DATABASE_URL,
-
-                }
-            }
+            datasourceUrl: process.env.DATABASE_URL,
         }
     ).$extends(withAccelerate())
 }

@@ -5,15 +5,9 @@ import {FriendRoute} from "./route/friends";
 import {HTTPException} from "hono/http-exception";
 import {jwtAuth} from "./lib/auth";
 import { openAPISpecs } from 'hono-openapi';
-import {
-    PrismaClientInitializationError,
-    PrismaClientKnownRequestError, PrismaClientRustPanicError, PrismaClientUnknownRequestError,
-    PrismaClientValidationError
-} from "@prisma/client/runtime/library";
 import {ZodError} from "zod";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import { swaggerUI } from '@hono/swagger-ui';
-
 
 const app = new OpenAPIHono<{ Variables: {"user_id":string}}>();
 
@@ -64,11 +58,6 @@ app.route("/friends",FriendRoute);
 app.onError((e,c) => {
     console.log(e)
     if (e instanceof HTTPException) return c.json({message: e.message},e.status);
-    if (e instanceof PrismaClientValidationError) return c.json({message: e.message},400);
-    if (e instanceof PrismaClientInitializationError) return c.json({message: e.message},500);
-    if (e instanceof PrismaClientKnownRequestError) return c.json({message: e.message},500);
-    if (e instanceof PrismaClientRustPanicError) return c.json({message: e.message},500);
-    if (e instanceof PrismaClientUnknownRequestError) return c.json({message: e.message},500);
     if (e instanceof ZodError) return c.json({message: e.message},400);
 
     return c.json({message: "Internal Server Error"}, 500);
