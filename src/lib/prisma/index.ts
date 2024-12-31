@@ -1,11 +1,10 @@
 import { PrismaClient } from "@prisma/client/edge"
 import { withAccelerate } from '@prisma/extension-accelerate'
 
-export function getPrismaClient(){
-    require('dotenv').config()
+export function getPrismaClient(url: string) {
     return new PrismaClient(
         {
-            datasourceUrl: process.env.DATABASE_URL,
+            datasourceUrl: url
         }
     ).$extends(withAccelerate())
 }

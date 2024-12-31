@@ -4,11 +4,14 @@ import {OpenAPIHono} from "@hono/zod-openapi";
 import {createRoom, deleteRoom, getRoomById} from "./route";
 import {getPrismaClient} from "../../lib/prisma";
 
-export const RoomRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>();
-const prisma = getPrismaClient();
+export const RoomRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
+type Bindings = {
+    DATABASE_URL: string
+}
 
 RoomRoute.openapi(getRoomById,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const { id } = c.req.valid('param')
         const user_id = c.get("user_id")
 
@@ -45,6 +48,7 @@ RoomRoute.openapi(getRoomById,
 
 RoomRoute.openapi(createRoom,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const room_id = crypto.randomUUID()
         const user_id = c.get("user_id")
         const req = c.req.valid('json')
@@ -80,6 +84,7 @@ RoomRoute.openapi(createRoom,
 )
 
 RoomRoute.openapi(deleteRoom, async (c) => {
+    const prisma = getPrismaClient(c.env?.DATABASE_URL);
     const { id } = c.req.valid('param')
     const user_id = c.get("user_id")
 

@@ -3,11 +3,14 @@ import {OpenAPIHono} from "@hono/zod-openapi";
 import {createFriend, deleteFriend, getFriendList, getFriendListById} from "./route";
 import {getPrismaClient} from "../../lib/prisma";
 
-export const FriendRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>();
-const prisma = getPrismaClient();
+export const FriendRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
+type Bindings = {
+    DATABASE_URL: string
+}
 
 FriendRoute.openapi(getFriendList,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const user_id = c.get("user_id")
         const result = await prisma.friends.findMany({
             where: {
@@ -36,6 +39,7 @@ FriendRoute.openapi(getFriendList,
 
 FriendRoute.openapi(getFriendListById,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const { id } = c.req.valid("param")
         const result = await prisma.friends.findMany({
             where: {
@@ -64,6 +68,7 @@ FriendRoute.openapi(getFriendListById,
 
 FriendRoute.openapi(createFriend,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const { id } = c.req.valid("param")
         const user_id = c.get("user_id")
 
@@ -81,6 +86,7 @@ FriendRoute.openapi(createFriend,
 
 FriendRoute.openapi(deleteFriend,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const { id } = c.req.valid("param")
         const user_id = c.get("user_id")
 

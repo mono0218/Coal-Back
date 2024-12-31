@@ -3,12 +3,14 @@ import {OpenAPIHono} from "@hono/zod-openapi";
 import {deleteUser, getUser, getUserById, updateUser} from "./route";
 import {getPrismaClient} from "../../lib/prisma";
 
-export const UserRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>()
-
-const prisma = getPrismaClient();
+export const UserRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
+type Bindings = {
+    DATABASE_URL: string
+}
 
 UserRoute.openapi(getUserById,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const { id } = c.req.valid("param")
         const user = await prisma.user.findUnique({
             where: {
@@ -43,7 +45,7 @@ UserRoute.openapi(getUserById,
 
 UserRoute.openapi(getUser,
     async (c) => {
-
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const user = await prisma.user.findUnique({
             where: {
                 id: c.req.param("id")
@@ -77,6 +79,7 @@ UserRoute.openapi(getUser,
 
 UserRoute.openapi(updateUser,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const user_id = c.get("user_id")
         const req = c.req.valid("json")
         const user = await prisma.user.update({
@@ -102,6 +105,7 @@ UserRoute.openapi(updateUser,
 
 UserRoute.openapi(deleteUser,
     async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
         const user_id = c.get("user_id")
         await prisma.user.delete({
             where: {
