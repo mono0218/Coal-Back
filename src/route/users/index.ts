@@ -46,9 +46,10 @@ UserRoute.openapi(getUserById,
 UserRoute.openapi(getUser,
     async (c) => {
         const prisma = getPrismaClient(c.env?.DATABASE_URL);
+        const user_id = c.get("user_id")
         const user = await prisma.user.findUnique({
             where: {
-                id: c.req.param("id")
+                id: user_id
             },
             select:{
                 id:true,
