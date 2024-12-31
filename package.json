@@ -2,17 +2,20 @@
   "name": "untitled3",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "generate": "prisma generate"
   },
+  "type": "module",
   "dependencies": {
     "@hono/swagger-ui": "^0.5.0",
     "@hono/zod-openapi": "^0.18.3",
     "@hono/zod-validator": "^0.4.2",
     "@kinde/jwt-validator": "^0.4.0",
     "@kinde/webhooks": "^1.0.0",
-    "@prisma/client": "6.1.0",
+    "@prisma/extension-accelerate": "^1.2.1",
     "hono": "^4.6.15",
     "hono-openapi": "^0.3.1",
     "jsonwebtoken": "^9.0.2",
@@ -23,9 +26,11 @@
     "zod-openapi": "^4.2.2"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.14",
-    "prisma": "6.1.0",
-    "typescript": "^5.5.3"
+    "@cloudflare/workers-types": "^4.20241230.0",
+    "@types/bun": "latest",
+    "prisma": "^6.1.0",
+    "typescript": "^5.5.3",
+    "wrangler": "^3.99.0"
   },
   "private": true
 }

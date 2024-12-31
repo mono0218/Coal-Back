@@ -1,11 +1,11 @@
 import { AccessToken } from 'livekit-server-sdk';
-import {PrismaClient} from "@prisma/client";
 import {HTTPException} from "hono/http-exception";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import {createRoom, deleteRoom, getRoomById} from "./route";
+import {getPrismaClient} from "../../lib/prisma";
 
 export const RoomRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>();
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 RoomRoute.openapi(getRoomById,
     async (c) => {

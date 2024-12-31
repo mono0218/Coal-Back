@@ -1,10 +1,10 @@
-import {PrismaClient} from '@prisma/client'
 import {Hono} from "hono";
 import {decodeWebhook} from "@kinde/webhooks";
+import {getPrismaClient} from "../../lib/prisma";
 
 
 export const kindeRoute = new Hono();
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 kindeRoute.post("/kinde",async (c) => {
     const body = await c.req.text();

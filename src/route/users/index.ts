@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import {HTTPException} from "hono/http-exception";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import {deleteUser, getUser, getUserById, updateUser} from "./route";
+import {getPrismaClient} from "../../lib/prisma";
 
 export const UserRoute =  new OpenAPIHono<{ Variables: {"user_id":string}}>()
 
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 UserRoute.openapi(getUserById,
     async (c) => {
