@@ -11,6 +11,11 @@ import {idRequestParamsScheme} from "../../lib/scheme/lib.scheme";
 export const getUserById = createRoute({
     method: "get",
     path: "/{id}",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request: {
         params: idRequestParamsScheme,
     },
@@ -46,6 +51,11 @@ export const getUserById = createRoute({
 export const getUser = createRoute({
     method: "get",
     path:"/",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     responses:{
         200:{
             content:{
@@ -77,6 +87,11 @@ export const getUser = createRoute({
 export const updateUser = createRoute({
     method: "put",
     path:"/",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request:{
         body:{
             content:{
@@ -117,6 +132,11 @@ export const updateUser = createRoute({
 export const deleteUser = createRoute({
     method: "delete",
     path: "/",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     responses:{
         200:{
             content:{

@@ -11,6 +11,11 @@ import {idRequestParamsScheme} from "../../lib/scheme/lib.scheme";
 export const getRoomById = createRoute({
     method: "get",
     path: '/{id}',
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request: {
         params: idRequestParamsScheme,
     },
@@ -45,6 +50,11 @@ export const getRoomById = createRoute({
 export const createRoom = createRoute({
     method: "post",
     path: "/",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request: {
         body: {
             content:{
@@ -85,6 +95,11 @@ export const createRoom = createRoute({
 export const deleteRoom = createRoute({
     method: "delete",
     path: "/{id}",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request: {
         params: idRequestParamsScheme,
     },

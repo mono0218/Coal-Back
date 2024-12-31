@@ -14,7 +14,7 @@ export const getFriendListResponseScheme = z.array(
         created_at: z.string(),
         updated_at: z.string()
     })
-)
+).openapi("GetFriendListScheme")
 
 export const getFriendListByIdResponseScheme = z.array(
     z.object({
@@ -30,7 +30,7 @@ export const getFriendListByIdResponseScheme = z.array(
         created_at: z.string(),
         updated_at: z.string()
     })
-)
+).openapi("GetFriendListByIdScheme")
 
 export const addFriendResponseScheme = z.object({
     id: z.string(),
@@ -39,10 +39,10 @@ export const addFriendResponseScheme = z.object({
     status: z.string(),
     created_at: z.string(),
     updated_at: z.string()
-})
+}).openapi("AddFriendScheme")
 
 export const deleteFriendResponseScheme = z.object({
     message: z.string().openapi({
         example: "Friend deleted"
     })
-})
+}).openapi("DeleteFriendScheme")

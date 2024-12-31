@@ -34,6 +34,11 @@ app.get(
     })
 );
 
+app.openAPIRegistry.registerComponent('securitySchemes', 'Bearer', {
+    type: 'http',
+    scheme: 'bearer',
+})
+
 app.doc('/specification', {
     openapi: '3.0.0',
     info: {

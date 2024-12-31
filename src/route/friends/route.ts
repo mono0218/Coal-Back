@@ -10,6 +10,11 @@ import {idRequestParamsScheme} from "../../lib/scheme/lib.scheme";
 export const getFriendList = createRoute({
     method: "get",
     path:"/",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     responses:{
         200:{
             content:{
@@ -41,6 +46,11 @@ export const getFriendList = createRoute({
 export const getFriendListById = createRoute({
     method: "get",
     path: "/{id}",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request:{
         params: idRequestParamsScheme
     },
@@ -75,6 +85,11 @@ export const getFriendListById = createRoute({
 export const createFriend = createRoute({
     method: "post",
     path: "/{id}",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request:{
         params: idRequestParamsScheme
     },
@@ -109,6 +124,11 @@ export const createFriend = createRoute({
 export const deleteFriend = createRoute({
     method: "delete",
     path: "/{id}",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
     request:{
         params: idRequestParamsScheme
     },
