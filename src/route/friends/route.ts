@@ -1,20 +1,50 @@
-import { createRoute } from "@hono/zod-openapi";
-import {
-    deleteUserResponseScheme,
-    getUserByIdResponseScheme,
-    updateUserRequestScheme,
-    updateUserResponseScheme
-} from "../../lib/scheme/user.scheme";
+import {createRoute} from "@hono/zod-openapi";
 import {ErrorResponse} from "../../lib/scheme/error.scheme";
+import {
+    addFriendResponseScheme, deleteFriendResponseScheme,
+    getFriendListByIdResponseScheme,
+    getFriendListResponseScheme
+} from "../../lib/scheme/friends.scheme";
 
-export const getUserById = createRoute({
+export const getFriendList = createRoute({
+    method: "get",
+    path:"/",
+    responses:{
+        200:{
+            content:{
+                "application/json":{
+                    schema:getFriendListResponseScheme
+                }
+            },
+            description:"Success"
+        },
+        404:{
+            content:{
+                "application/json":{
+                    schema:ErrorResponse
+                }
+            },
+            description:"User not found"
+        },
+        500:{
+            content:{
+                "application/json":{
+                    schema:ErrorResponse
+                }
+            },
+            description:"Internal Server Error"
+        }
+    }
+})
+
+export const getFriendListById = createRoute({
     method: "get",
     path: "/{id}",
     responses:{
         200:{
             content:{
                 "application/json":{
-                    schema:getUserByIdResponseScheme
+                    schema:getFriendListByIdResponseScheme
                 }
             },
             description:"Success"
@@ -38,15 +68,14 @@ export const getUserById = createRoute({
     }
 })
 
-
-export const getUser = createRoute({
-    method: "get",
-    path:"/",
+export const createFriend = createRoute({
+    method: "post",
+    path: "/{id}",
     responses:{
         200:{
             content:{
                 "application/json":{
-                    schema:getUserByIdResponseScheme
+                    schema:addFriendResponseScheme
                 }
             },
             description:"Success"
@@ -70,59 +99,33 @@ export const getUser = createRoute({
     }
 })
 
-export const updateUser = createRoute({
-    method: "put",
-    path:"/",
-    request:{
-        params: updateUserRequestScheme
-    },
-    responses:{
-        200:{
-            content:{
-                "application/json":{
-                    schema:updateUserResponseScheme
-                }
-            },
-            description:"Success"
-        },
-        400:{
-            content:{
-                "application/json":{
-                    schema:ErrorResponse
-                }
-            },
-            description:"Bad Request"
-        },
-        500:{
-            content:{
-                "application/json":{
-                    schema:ErrorResponse
-                }
-            },
-            description:"Internal Server Error"
-        }
-    }
-})
-
-export const deleteUser = createRoute({
+export const deleteFriend = createRoute({
     method: "delete",
-    path: "/",
-    responses:{
-        200:{
-            content:{
-                "application/json":{
-                    schema:deleteUserResponseScheme
+    path: "/{id}",
+    responses: {
+        200: {
+            content: {
+                "application/json": {
+                    schema: deleteFriendResponseScheme
                 }
             },
-            description:"Success"
+            description: "Success"
         },
-        500:{
-            content:{
-                "application/json":{
-                    schema:ErrorResponse
+        404: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponse
                 }
             },
-            description:"Internal Server Error"
+            description: "User not found"
+        },
+        500: {
+            content: {
+                "application/json": {
+                    schema: ErrorResponse
+                }
+            },
+            description: "Internal Server Error"
         }
     }
 })
