@@ -6,10 +6,14 @@ import {
     updateUserResponseScheme
 } from "../../lib/scheme/user.scheme";
 import {ErrorResponse} from "../../lib/scheme/error.scheme";
+import {idRequestParamsScheme} from "../../lib/scheme/lib.scheme";
 
 export const getUserById = createRoute({
     method: "get",
     path: "/{id}",
+    request: {
+        params: idRequestParamsScheme,
+    },
     responses:{
         200:{
             content:{
@@ -74,7 +78,13 @@ export const updateUser = createRoute({
     method: "put",
     path:"/",
     request:{
-        params: updateUserRequestScheme
+        body:{
+            content:{
+                "application/json":{
+                    schema:updateUserRequestScheme
+                }
+            }
+        }
     },
     responses:{
         200:{

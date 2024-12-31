@@ -9,12 +9,12 @@ const prisma = new PrismaClient();
 
 RoomRoute.openapi(getRoomById,
     async (c) => {
-        const room_id = c.req.param("id")
+        const { id } = c.req.valid('param')
         const user_id = c.get("user_id")
 
         const room = await prisma.rooms.findUnique({
             where: {
-                id: room_id
+                id: id
             }
         })
 
@@ -37,7 +37,7 @@ RoomRoute.openapi(getRoomById,
             ttl: '10m',
         });
 
-        at.addGrant({ roomJoin: true, room: room_id });
+        at.addGrant({ roomJoin: true, room: id });
 
         return c.json({token: await at.toJwt()},200)
     }
@@ -47,7 +47,7 @@ RoomRoute.openapi(createRoom,
     async (c) => {
         const room_id = crypto.randomUUID()
         const user_id = c.get("user_id")
-        const req = c.req.valid("param")
+        const req = c.req.valid('json')
 
         const result = await prisma.user.findUnique({
             where: {
@@ -80,12 +80,12 @@ RoomRoute.openapi(createRoom,
 )
 
 RoomRoute.openapi(deleteRoom, async (c) => {
-    const room_id = c.req.param("id")
+    const { id } = c.req.valid('param')
     const user_id = c.get("user_id")
 
     const room = await prisma.rooms.findUnique({
         where:{
-            id: room_id,
+            id: id,
         }
     })
 
@@ -99,7 +99,7 @@ RoomRoute.openapi(deleteRoom, async (c) => {
 
     await prisma.rooms.delete({
         where:{
-            id: room_id,
+            id: id,
         }
     })
 

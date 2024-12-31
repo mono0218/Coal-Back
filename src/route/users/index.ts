@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 UserRoute.openapi(getUserById,
     async (c) => {
-        const id = c.req.param("id")
+        const { id } = c.req.valid("param")
         const user = await prisma.user.findUnique({
             where: {
                 id: id
@@ -78,7 +78,7 @@ UserRoute.openapi(getUser,
 UserRoute.openapi(updateUser,
     async (c) => {
         const user_id = c.get("user_id")
-        const req = c.req.valid("param")
+        const req = c.req.valid("json")
         const user = await prisma.user.update({
             where: {
                 id: user_id

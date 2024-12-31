@@ -36,7 +36,7 @@ FriendRoute.openapi(getFriendList,
 
 FriendRoute.openapi(getFriendListById,
     async (c) => {
-        const id = c.req.param("id")
+        const { id } = c.req.valid("param")
         const result = await prisma.friends.findMany({
             where: {
                 from_id: id
@@ -64,7 +64,7 @@ FriendRoute.openapi(getFriendListById,
 
 FriendRoute.openapi(createFriend,
     async (c) => {
-        const id = c.req.param("id")
+        const { id } = c.req.valid("param")
         const user_id = c.get("user_id")
 
         const result = await prisma.friends.create({
@@ -81,7 +81,7 @@ FriendRoute.openapi(createFriend,
 
 FriendRoute.openapi(deleteFriend,
     async (c) => {
-        const id = c.req.param("id")
+        const { id } = c.req.valid("param")
         const user_id = c.get("user_id")
 
         await prisma.friends.deleteMany({

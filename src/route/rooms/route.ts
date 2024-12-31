@@ -6,10 +6,14 @@ import {
     postRoomResponseScheme
 } from "../../lib/scheme/rooms.scheme";
 import {ErrorResponse} from "../../lib/scheme/error.scheme";
+import {idRequestParamsScheme} from "../../lib/scheme/lib.scheme";
 
 export const getRoomById = createRoute({
     method: "get",
     path: '/{id}',
+    request: {
+        params: idRequestParamsScheme,
+    },
     responses:{
         200:{
             content:{
@@ -42,7 +46,13 @@ export const createRoom = createRoute({
     method: "post",
     path: "/",
     request: {
-        params: postRoomRequestScheme
+        body: {
+            content:{
+                "application/json":{
+                    schema: postRoomRequestScheme
+                }
+            }
+        }
     },
     responses:{
         200:{
@@ -75,6 +85,9 @@ export const createRoom = createRoute({
 export const deleteRoom = createRoute({
     method: "delete",
     path: "/{id}",
+    request: {
+        params: idRequestParamsScheme,
+    },
     responses: {
         200: {
             content: {
