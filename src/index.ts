@@ -14,6 +14,7 @@ import {
 import {ZodError} from "zod";
 
 const app = new Hono<{ Variables: {"user_id":string}}>();
+
 app.use("*",async (c, next) => {
     if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")) return await next();
 
@@ -47,6 +48,7 @@ app.route("/rooms",RoomRoute);
 app.route("/friends",FriendRoute);
 
 app.onError((e,c) => {
+    console.log(e)
     if (e instanceof HTTPException) return c.json({message: e.message},e.status);
     if (e instanceof PrismaClientValidationError) return c.json({message: e.message},400);
     if (e instanceof PrismaClientInitializationError) return c.json({message: e.message},500);

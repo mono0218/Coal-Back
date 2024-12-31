@@ -7,6 +7,7 @@
     "build": "tsc"
   },
   "dependencies": {
+    "@hono/zod-openapi": "^0.18.3",
     "@hono/zod-validator": "^0.4.2",
     "@kinde/jwt-validator": "^0.4.0",
     "@kinde/webhooks": "^1.0.0",

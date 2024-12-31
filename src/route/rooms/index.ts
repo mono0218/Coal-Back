@@ -48,6 +48,7 @@ RoomRoute.post("/",
     }),
     async (c) => {
         const room_id = crypto.randomUUID()
+        console.log(room_id)
         const user_id = c.get("user_id")
         const req = c.req.valid("json")
 
