@@ -8,8 +8,12 @@ import { openAPISpecs } from 'hono-openapi';
 import {ZodError} from "zod";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import { swaggerUI } from '@hono/swagger-ui';
+import { Prisma } from "@prisma/client/edge"
 
-const app = new OpenAPIHono<{ Variables: {"user_id":string}}>();
+const app = new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
+type Bindings = {
+    DATABASE_URL: string
+}
 
 app.use("*",async (c, next) => {
     if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")) return await next();
@@ -63,7 +67,8 @@ app.route("/friends",FriendRoute);
 app.onError((e,c) => {
     console.log(e)
     if (e instanceof HTTPException) return c.json({message: e.message},e.status);
-    if (e instanceof ZodError) return c.json({message: e.message},400);
+    if (e instanceof ZodError) return c.json({message: e.message},400)
+    if (e instanceof Prisma.PrismaClientKnownRequestError) return c.json({message: e.message},500)
 
     return c.json({message: "Internal Server Error"}, 500);
 })
