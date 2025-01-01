@@ -7,6 +7,8 @@ import {getPrismaClient} from "../../lib/prisma";
 export const RoomRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
 type Bindings = {
     DATABASE_URL: string
+    LIVEKIT_API_KEY: string
+    LIVEKIT_API_SECRET: string
 }
 
 RoomRoute.openapi(getRoomById,
@@ -63,7 +65,7 @@ RoomRoute.openapi(createRoom,
             throw new HTTPException(404, {message: "User not found"})
         }
 
-        const at = new AccessToken(process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET, {
+        const at = new AccessToken(c.env.LIVEKIT_API_KEY, c.env.LIVEKIT_API_SECRET, {
             identity: result.username,
             ttl: '10m',
         });
