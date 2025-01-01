@@ -21,8 +21,32 @@ UserRoute.openapi(getUserById,
                 username:true,
                 icon_url:true,
                 status:true,
-                from_users:true,
-                to_users:true,
+                from_users:{
+                    select:{
+                        from_user:{
+                            select:{
+                                id:true,
+                                username:true,
+                                icon_url:true,
+                                status:true,
+                                created_at:true
+                            }
+                        }
+                    }
+                },
+                to_users:{
+                    select:{
+                        to_user:{
+                            select:{
+                                id:true,
+                                username:true,
+                                icon_url:true,
+                                status:true,
+                                created_at:true
+                            }
+                        }
+                    }
+                },
                 created_at:true,
             }
         })
@@ -36,8 +60,12 @@ UserRoute.openapi(getUserById,
             username: user.username,
             icon_url: user.icon_url,
             status: user.status,
-            from_users: user.from_users,
-            to_users: user.to_users,
+            from_users: user.from_users.map((friend)=>{
+                return friend.from_user
+            }),
+            to_users: user.to_users.map((friend)=>{
+                return friend.to_user
+            }),
             created_at: user.created_at
         },200)
     }
@@ -56,8 +84,32 @@ UserRoute.openapi(getUser,
                 username:true,
                 icon_url:true,
                 status:true,
-                from_users:true,
-                to_users:true,
+                from_users:{
+                    select:{
+                        from_user:{
+                            select:{
+                                id:true,
+                                username:true,
+                                icon_url:true,
+                                status:true,
+                                created_at:true
+                            }
+                        }
+                    }
+                },
+                to_users:{
+                    select:{
+                        to_user:{
+                            select:{
+                                id:true,
+                                username:true,
+                                icon_url:true,
+                                status:true,
+                                created_at:true
+                            }
+                        }
+                    }
+                },
                 created_at:true,
             }
         })
@@ -71,8 +123,12 @@ UserRoute.openapi(getUser,
             username: user.username,
             icon_url: user.icon_url,
             status: user.status,
-            from_users: user.from_users,
-            to_users: user.to_users,
+            from_users: user.from_users.map((friend)=>{
+                return friend.from_user
+            }),
+            to_users: user.to_users.map((friend)=>{
+                return friend.to_user
+            }),
             created_at: user.created_at
         },200)
     }
