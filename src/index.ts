@@ -68,7 +68,11 @@ app.onError((e,c) => {
     console.log(e)
     if (e instanceof HTTPException) return c.json({message: e.message},e.status);
     if (e instanceof ZodError) return c.json({message: e.message},400)
-    if (e instanceof Prisma.PrismaClientKnownRequestError) return c.json({message: e.message},500)
+    if (e instanceof Prisma.PrismaClientValidationError) return c.json({message: e.message},400);
+    if (e instanceof Prisma.PrismaClientInitializationError) return c.json({message: e.message},500);
+    if (e instanceof Prisma.PrismaClientKnownRequestError) return c.json({message: e.message},500);
+    if (e instanceof Prisma.PrismaClientRustPanicError) return c.json({message: e.message},500);
+    if (e instanceof Prisma.PrismaClientUnknownRequestError) return c.json({message: e.message},500);
 
     return c.json({message: "Internal Server Error"}, 500);
 })
