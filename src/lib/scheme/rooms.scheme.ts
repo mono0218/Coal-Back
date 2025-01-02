@@ -15,6 +15,9 @@ export const postRoomRequestScheme = z.object({
 export const postRoomResponseScheme = z.object({
     token: z.string().openapi({
         example: "Example JWT Token"
+    }),
+    uuid: z.string().openapi({
+      example: "Example UUID"
     })
 }).openapi("CreateRoomResponseScheme");
 

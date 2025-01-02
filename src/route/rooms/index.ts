@@ -81,7 +81,10 @@ RoomRoute.openapi(createRoom,
             }
         })
 
-        return c.json({token: await at.toJwt()},200)
+        return c.json({
+            token: await at.toJwt(),
+            uuid: room_id
+        },200)
     }
 )
 
