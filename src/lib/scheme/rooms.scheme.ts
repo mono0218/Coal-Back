@@ -4,7 +4,7 @@ export const getRoomResponseScheme = z.object({
     token: z.string().openapi({
         example: "Example JWT Token"
     })
-})
+}).openapi("GetRoomScheme");
 
 export const postRoomRequestScheme = z.object({
     name: z.string().openapi({
@@ -16,7 +16,7 @@ export const postRoomResponseScheme = z.object({
     token: z.string().openapi({
         example: "Example JWT Token"
     })
-}).openapi("CreateRoomScheme");
+}).openapi("CreateRoomResponseScheme");
 
 export const deleteRoomResponseScheme = z.object({
     message: z.string().openapi({
