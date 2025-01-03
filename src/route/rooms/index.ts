@@ -37,7 +37,7 @@ RoomRoute.openapi(getRoomById,
             throw new HTTPException(404, {message: "User not found"})
         }
 
-        const at = new AccessToken(process.env.LIVEKIT_API_KEY, process.env.LIVEKIT_API_SECRET, {
+        const at = new AccessToken(c.env.LIVEKIT_API_KEY, c.env.LIVEKIT_API_SECRET, {
             identity: result.username,
             ttl: '10m',
         });
