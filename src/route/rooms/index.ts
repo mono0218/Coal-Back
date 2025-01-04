@@ -3,12 +3,15 @@ import {HTTPException} from "hono/http-exception";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import {createRoom, deleteRoom, getRoomById} from "./route";
 import {getPrismaClient} from "../../lib/prisma";
+import {createNotification} from "../../lib/firebase/notification";
+
 
 export const RoomRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
 type Bindings = {
     DATABASE_URL: string
     LIVEKIT_API_KEY: string
     LIVEKIT_API_SECRET: string
+    FIREBASE_TOKEN: string
 }
 
 RoomRoute.openapi(getRoomById,
@@ -44,7 +47,7 @@ RoomRoute.openapi(getRoomById,
 
         at.addGrant({ roomJoin: true, room: id });
 
-        return c.json({token: await at.toJwt()},200)
+        return c.json({token: await at.toJwt(),uuid:id,name:room.name},200)
     }
 )
 
@@ -81,9 +84,16 @@ RoomRoute.openapi(createRoom,
             }
         })
 
+        await createNotification({
+            title: `${result.username}さんが通話で呼んでいます！！！`,
+            body: `部屋名：${req.name}`,
+            token:　c.env.FIREBASE_TOKEN
+        })
+
         return c.json({
             token: await at.toJwt(),
-            uuid: room_id
+            uuid: room_id,
+            name: req.name
         },200)
     }
 )
