@@ -18,7 +18,7 @@ type Bindings = {
 }
 
 app.use("*",async (c, next) => {
-    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")||c.req.path.includes("/test")) return await next();
+    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")) return await next();
 
     let token = c.req.header("Authorization")
     if (!token) throw new HTTPException(401,{message:"Unauthorized"});
