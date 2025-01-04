@@ -1,6 +1,6 @@
 import {HTTPException} from "hono/http-exception";
 import {OpenAPIHono} from "@hono/zod-openapi";
-import {deleteUser, getUser, getUserById, updateUser} from "./route";
+import {deleteUser, getUser, getUserById, postFcmToken, updateUser} from "./route";
 import {getPrismaClient} from "../../lib/prisma";
 
 export const UserRoute =  new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
@@ -131,6 +131,24 @@ UserRoute.openapi(getUser,
             }),
             created_at: user.created_at
         },200)
+    }
+)
+
+UserRoute.openapi(postFcmToken,
+    async (c) => {
+        const prisma = getPrismaClient(c.env?.DATABASE_URL);
+        const user_id = c.get("user_id")
+        const req = c.req.valid("json")
+        await prisma.user.update({
+            where: {
+                id: user_id
+            },
+            data: {
+                fcm_token: req.fcm_token
+            }
+        })
+
+        return c.json({message: "Token updated"},200)
     }
 )
 

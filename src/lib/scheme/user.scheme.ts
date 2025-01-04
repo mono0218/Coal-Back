@@ -71,6 +71,18 @@ export const updateUserResponseScheme = z.object({
     })
 }).openapi("UpdateUserScheme");
 
+export const postFcmTokenRequestScheme = z.object({
+    fcm_token: z.string().openapi({
+        example: "fcm_token"
+    })
+}).openapi("PostFcmTokenScheme");
+
+export const postFcmTokenResponseScheme = z.object({
+    message: z.string().openapi({
+        example: "Token updated"
+    })
+}).openapi("PostFcmTokenResponseScheme");
+
 export const deleteUserResponseScheme = z.object({
     message: z.string().openapi({
         example: "User deleted"

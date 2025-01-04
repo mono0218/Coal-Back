@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import {
     deleteUserResponseScheme,
-    getUserByIdResponseScheme,
+    getUserByIdResponseScheme, postFcmTokenRequestScheme, postFcmTokenResponseScheme,
     updateUserRequestScheme,
     updateUserResponseScheme
 } from "../../lib/scheme/user.scheme";
@@ -106,6 +106,51 @@ export const updateUser = createRoute({
             content:{
                 "application/json":{
                     schema:updateUserResponseScheme
+                }
+            },
+            description:"Success"
+        },
+        400:{
+            content:{
+                "application/json":{
+                    schema:ErrorResponse
+                }
+            },
+            description:"Bad Request"
+        },
+        500:{
+            content:{
+                "application/json":{
+                    schema:ErrorResponse
+                }
+            },
+            description:"Internal Server Error"
+        }
+    }
+})
+
+export const postFcmToken = createRoute({
+    method: "post",
+    path:"/fcm-token",
+    security: [
+        {
+            Bearer: [],
+        },
+    ],
+    request:{
+        body:{
+            content:{
+                "application/json":{
+                    schema:postFcmTokenRequestScheme
+                }
+            }
+        }
+    },
+    responses:{
+        200:{
+            content:{
+                "application/json":{
+                    schema:postFcmTokenResponseScheme
                 }
             },
             description:"Success"
