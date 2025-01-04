@@ -9,6 +9,7 @@ import {ZodError} from "zod";
 import {OpenAPIHono} from "@hono/zod-openapi";
 import { swaggerUI } from '@hono/swagger-ui';
 import { Prisma } from "@prisma/client/edge"
+import {LivekitRoute} from "./route/livekit";
 
 const app = new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
 type Bindings = {
@@ -60,6 +61,7 @@ app.get("/", (c) => {
     return c.json({status: "Success"});
 });
 app.route("/webhook",kindeRoute);
+app.route("/webhook",LivekitRoute)
 app.route("/users",UserRoute);
 app.route("/rooms",RoomRoute);
 app.route("/friends",FriendRoute);
