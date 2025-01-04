@@ -13,10 +13,11 @@ import { Prisma } from "@prisma/client/edge"
 const app = new OpenAPIHono<{ Variables: {"user_id":string},Bindings:Bindings}>()
 type Bindings = {
     DATABASE_URL: string
+    FIREBASE_CREDENTIAL: string
 }
 
 app.use("*",async (c, next) => {
-    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")) return await next();
+    if (c.req.path.includes("/webhook") || c.req.path.includes("/openapi")|| c.req.path.includes("/docs")||c.req.path.includes("/specification")||c.req.path.includes("/test")) return await next();
 
     let token = c.req.header("Authorization")
     if (!token) throw new HTTPException(401,{message:"Unauthorized"});
@@ -58,7 +59,6 @@ app.get('/docs', swaggerUI({
 app.get("/", (c) => {
     return c.json({status: "Success"});
 });
-
 app.route("/webhook",kindeRoute);
 app.route("/users",UserRoute);
 app.route("/rooms",RoomRoute);

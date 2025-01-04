@@ -22,6 +22,7 @@ model User {
   joining_rooms RoomsOnUsers[]
   from_users    Friends[]      @relation("from_users")
   to_users      Friends[]      @relation("to_users")
+  fcm_token     String         @default("")
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

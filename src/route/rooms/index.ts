@@ -11,7 +11,7 @@ type Bindings = {
     DATABASE_URL: string
     LIVEKIT_API_KEY: string
     LIVEKIT_API_SECRET: string
-    FIREBASE_TOKEN: string
+    FIREBASE_CREDENTIAL: string
 }
 
 RoomRoute.openapi(getRoomById,
@@ -64,7 +64,13 @@ RoomRoute.openapi(createRoom,
             },
         })
 
-        if (!result) {
+        const to_user = await prisma.user.findUnique({
+            where: {
+                id: req.to_uuid
+            }
+        })
+
+        if (!result || !to_user) {
             throw new HTTPException(404, {message: "User not found"})
         }
 
@@ -84,11 +90,17 @@ RoomRoute.openapi(createRoom,
             }
         })
 
-        await createNotification({
-            title: `${result.username}さんが通話で呼んでいます！！！`,
-            body: `部屋名：${req.name}`,
-            token:　c.env.FIREBASE_TOKEN
-        })
+        try{
+            if (to_user.fcm_token != ""){
+                await createNotification({
+                    title: `${req.name}さんが通話で呼んでいます！！！`,
+                    body: `部屋名：${req.name}`,
+                    token:　to_user.fcm_token,
+                    credential: c.env.FIREBASE_CREDENTIAL
+                })
+            }
+        }catch (e) {
+        }
 
         return c.json({
             token: await at.toJwt(),
